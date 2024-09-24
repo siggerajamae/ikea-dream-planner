@@ -1,3 +1,4 @@
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from time import sleep
@@ -17,8 +18,8 @@ cookies.click()
 
 button = driver.find_element(By.XPATH, '//span[@class="plp-btn__label"]/../..')
 
-for i in range(75):
-  sleep(0.2)
+for i in range(70):
+  sleep(1.5)
   button.click()
   print(f"clicked {i+1} times")
 
@@ -58,3 +59,10 @@ for bed in all_beds:
   print(bed)
 
 driver.quit()
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+file_path = os.path.join(script_dir, 'output.txt')
+
+with open(file_path, 'w', encoding='utf-8') as file:
+  for bed in all_beds:
+    file.write(f'{bed}\n')

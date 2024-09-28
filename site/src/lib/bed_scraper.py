@@ -34,6 +34,7 @@ def scrape_products():
   i = 1
   
   for product in products:
+    print("Trying to find a bed")
     try:
       # Slower with XPATH but didn't get .CLASS to work (????)
       name = product.find_element(By.XPATH, './/span[@class="notranslate plp-price-module__product-name"]').text
@@ -47,12 +48,12 @@ def scrape_products():
         'name': name,
         'description': description,
         'image': image,
-        'price': int(price),
+        'price': int(price.replace(' ', '')),
         'springs': springs,
         'firmness': firmness,
       })
 
-    except:
+    except Exception as e:
       continue
       
     print(f"found {i} beds so far")

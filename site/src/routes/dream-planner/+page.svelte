@@ -137,6 +137,7 @@
 
   .bed-card {
     display: flex;
+    flex-direction: row;
     border: 1px solid #ddd;
     border-radius: 0.5rem;
     padding: 1rem;
@@ -155,5 +156,15 @@
   .bed-info {
     display: flex;
     flex-direction: column;
+  }
+
+  .bed-info h3 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+
+  .bed-info p {
+    margin: 0.2rem 0;
+    font-size: 1rem;
   }
 </style>

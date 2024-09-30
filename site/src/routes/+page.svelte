@@ -39,7 +39,7 @@
                 description={`Knows everything there is to know about sleeping,
                 and how our different products affect sleep!`}
                 icon={botIcon}
-                href={"#"}
+                href={"slumberbot"}
             />
             <ToolCard
                 name={"Night Closet"}

@@ -34,7 +34,7 @@
                 description={`Get help furnishing your room for your specific
                 sleeping needs.`}
                 icon={NightlightIcon}
-                href={"#"}
+                href={"dream-planner"}
             />
             <ToolCard
                 name={"Slumber Bot"}

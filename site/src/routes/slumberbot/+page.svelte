@@ -153,10 +153,11 @@
     #chat-wrapper {
         display: flex;
         flex-direction: column;
-        height: 500px;
+        height: 65vh;
         max-width: 800px;
         margin: 0 auto;
         font-family: "Arial", sans-serif;
+        margin-bottom: 70px;
     }
 
     #chat-container {

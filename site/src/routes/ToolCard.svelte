@@ -7,30 +7,31 @@
 
 <a {href} class="tool-card">
     <section>
-        <div class="header-icon">
+        <div class="top-row">
             <h3>{name}</h3>
-            <img src={icon} alt={`${name} icon`} />
+            <svelte:component this={icon} class="icon" />
         </div>
         <p>{description}</p>
     </section>
 </a>
 
 <style lang="scss">
-    .header-icon {
+    .top-row {
         display: flex;
         justify-content: space-between;
         align-items: start;
         gap: 1rem;
 
-        img {
-            height: 2rem;
+        :global(svg) {
+            fill: var(--color-bg-main);
         }
     }
 
     .tool-card {
-        border: 0.15rem solid;
         border-radius: 0.6rem;
         padding: 1.2rem;
+        background-color: var(--color-text-main);
+        color: var(--color-bg-main);
 
         p {
             margin: 0;

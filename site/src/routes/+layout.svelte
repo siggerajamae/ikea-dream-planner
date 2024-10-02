@@ -3,6 +3,7 @@
     import "$lib/style/global.scss"
 
     import ikeaIcon from "$lib/assets/ikea.svg";
+    import chalmersIcon from "$lib/assets/chalmers.svg";
 </script>
 
 <!-- Navigation -->
@@ -15,7 +16,8 @@
 <slot />
 
 <footer>
-    <h2>TODO</h2>
+    <img src={chalmersIcon} alt="Chalmers University of Technology logotype" />
+    <h2>TEK830 Digitalization and AI in practice</h2>
 </footer>
 
 <style lang="scss">
@@ -24,9 +26,15 @@
     }
 
     footer {
+        background-color: var(--color-bg-darker);
         display: flex;
         justify-content: center;
         align-items: center;
         padding: 4rem;
+        gap: 4rem;
+
+        img {
+            width: 6rem;
+        }
     }
 </style>

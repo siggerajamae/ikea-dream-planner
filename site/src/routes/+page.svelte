@@ -67,8 +67,8 @@
                 <h4>Usability</h4>
                 <p>
                     Our tools are designed with young East Asians in mind, but
-                    are generally targeted towards anyone who seeks tips or
-                    inspiration on how to improve their sleep comfort. In our
+                    can generally be utilized by anyone who seeks tips or
+                    inspiration on how to improve their sleeping comfort. In our
                     research, we found that a significant portion of the
                     population in countries such as South Korea and Japan
                     struggle with sleep, where some primary factors are stress,

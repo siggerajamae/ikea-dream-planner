@@ -13,7 +13,6 @@
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
-		"sass-embedded": "^1.79.3",
 		"svelte": "^4.2.7",
 		"svelte-check": "^4.0.0",
 		"typescript": "^5.0.0",
@@ -21,6 +20,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"openai": "^4.65.0"
+		"openai": "^4.65.0",
+		"sass": "^1.79.4"
 	}
 }

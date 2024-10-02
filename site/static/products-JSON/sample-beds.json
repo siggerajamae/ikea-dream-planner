@@ -1,0 +1,62 @@
+[
+  {
+    "name": "SKOTTERUD",
+    "description": "Wooden base sprung mattress, 120x200 cm",
+    "image": "https://www.ikea.com/se/en/images/products/skotterud-wooden-base-sprung-mattress-medium-firm-dark-grey__0395435_pe562576_s5.jpg?f=xxs",
+    "price": 3495,
+    "conditions": {
+      "springs": "Pocket springs",
+      "firmness": "Medium firm"
+    }
+  },
+  {
+    "name": "SÄBÖVIK",
+    "description": "Divan bed, 140x200 cm",
+    "image": "https://www.ikea.com/se/en/images/products/saeboevik-divan-bed-firm-vissle-grey__0891216_pe782251_s5.jpg?f=xxs",
+    "price": 3795,
+    "conditions": {
+      "springs": "Springs",
+      "firmness": "Firm"
+    }
+  },
+  {
+    "name": "SKÅRER",
+    "description": "Sprung base incl. mattress pad, 120x200 cm",
+    "image": "https://www.ikea.com/se/en/images/products/skarer-sprung-base-incl-mattress-pad-medium-firm-tuddal__0536146_pe649895_s5.jpg?f=xxs",
+    "price": 4890,
+    "conditions": {
+      "springs": "Pocket springs",
+      "firmness": "Medium firm"
+    }
+  },
+  {
+    "name": "SKOTTERUD",
+    "description": "Sprung base incl. mattress pad, 120x200 cm",
+    "image": "https://www.ikea.com/se/en/images/products/skotterud-sprung-base-incl-mattress-pad-medium-firm-tustna__0536139_pe649892_s5.jpg?f=xxs",
+    "price": 6290,
+    "conditions": {
+      "springs": "Pocket springs",
+      "firmness": "Medium firm"
+    }
+  },
+  {
+    "name": "DUNVIK",
+    "description": "Divan bed, 140x200 cm",
+    "image": "https://www.ikea.com/se/en/images/products/dunvik-divan-bed-vagstranda-firm-tustna-dark-grey__0392276_pe575868_s5.jpg?f=xxs",
+    "price": 12329,
+    "conditions": {
+      "springs": "Pocket springs",
+      "firmness": "Firm"
+    }
+  },
+  {
+    "name": "SNARUM",
+    "description": "Sprung base incl. mattress pad, 120x200 cm",
+    "image": "https://www.ikea.com/se/en/images/products/snarum-sprung-base-incl-mattress-pad-medium-firm-tuddal__0642087_pe700886_s5.jpg?f=xxs",
+    "price": 4890,
+    "conditions": {
+      "springs": "Springs",
+      "firmness": "Medium firm"
+    }
+  }
+]

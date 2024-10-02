@@ -1,3 +1,10 @@
+# Using slumberbot
+Create a file named .env in the root. Then, add the line
+
+`VITE_OPENAI_API_KEY=sk-proj-......`
+
+And you're good to go!
+
 # create-svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).

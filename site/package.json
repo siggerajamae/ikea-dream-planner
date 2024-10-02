@@ -20,6 +20,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"dotenv": "^16.4.5",
 		"openai": "^4.65.0",
 		"sass": "^1.79.4"
 	}

@@ -10,6 +10,8 @@ driver = webdriver.Chrome()
 driver.get(url)
 
 
+# https://sik.search.blue.cdtapps.com/se/en/search?c=listaf&v=20240110
+
 # For page to load
 sleep(2) 
 

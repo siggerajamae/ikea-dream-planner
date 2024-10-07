@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import QuestionCard from "./QuestionCard.svelte";
-  import nightlightIcon from "$lib/assets/nightlight.svg";
+  import nightlightIcon from "$lib/components/NightlightIcon.svelte";
 
   interface Conditions {
     firmness: string;

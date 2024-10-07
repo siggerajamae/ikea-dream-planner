@@ -3,7 +3,7 @@
 
   export let question: string;
   export let choices: string[]; // Array of choices
-  export let icon: string;
+  export let icon;
 
   let selectedChoice: string = "";
 
@@ -19,7 +19,7 @@
   <section>
     <div class="header-icon">
       <h3>{question}</h3>
-      <img src={icon} alt={"Icon for ${question}"} />
+      <svelte:component this={icon} alt={"Icon for ${question}"} />
     </div>
 
     <div class="choices">

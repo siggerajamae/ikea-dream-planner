@@ -113,5 +113,5 @@ if __name__ == "__main__":
         products.extend(results)
 
     # Dump to json
-    with open("products.json", "w") as fp:
+    with open("products.json", "w", encoding='utf-8') as fp:
         json.dump(products, fp, indent=2)

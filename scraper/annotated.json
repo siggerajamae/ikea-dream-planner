@@ -1,0 +1,25 @@
+{
+    "id": "40309870",
+    "name": "SKOTTERUD",
+    "conditions": {
+        "type": "and",
+        "left": {
+            "type": "or",
+            "left": {
+                "type": "predicate",
+                "name": "min_temp",
+                "value": "1"
+            },
+            "right": {
+                "type": "predicate",
+                "name": "max_temp",
+                "value": "10"
+            }
+        },
+        "right": {
+            "type": "predicate",
+            "name": "min_temp",
+            "value": "2"
+        }
+    }
+}

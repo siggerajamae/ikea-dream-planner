@@ -130,6 +130,13 @@
   .beds {
     flex: 1;
   }
+
+  .questions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .beds {
     padding-left: 1rem;
     border-left: 1px solid #ddd;

@@ -1,0 +1,18 @@
+{
+    "id": "blargh123",
+    "conditions": [
+        {
+            "type": "and",
+            "left": {
+                "type": "predicate",
+                "name": "minTemp",
+                "value": "24"
+            },
+            "right": {
+                "type": "predicate",
+                "name": "maxHoursSlept",
+                "value": 7
+            }
+        }
+    ]
+}

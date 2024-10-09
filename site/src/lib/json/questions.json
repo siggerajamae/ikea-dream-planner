@@ -1,0 +1,37 @@
+{
+    "normal": [
+        {
+            "id": "TIME_WAKE",
+            "ask": "What time do you wake up?",
+            "methodName": "NUMBER"
+        },
+        {
+            "id": "TIME_SLEEP",
+            "ask": "What time do you wake up?",
+            "methodName": "NUMBER"
+        },
+        {
+            "id": "LOCATION",
+            "ask": "Where do you live?",
+            "methodName": "LOCATION",
+            "followUpQuestions": [
+                "SLEEP_HOURS"
+            ],
+            "substituteQuestions": [
+                "WARM"
+            ]
+        }
+    ],
+    "conditional": [
+        {
+            "id": "SLEEP_HOURS",
+            "ask": "How many hours do you sleep per night?",
+            "methodName": "NUMBER"
+        },
+        {
+            "id": "WARM",
+            "ask": "Is it warm where you live?",
+            "methodName": "BINARY"
+        }
+    ]
+}

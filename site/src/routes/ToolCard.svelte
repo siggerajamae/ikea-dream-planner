@@ -9,7 +9,7 @@
     <section>
         <div class="top-row">
             <h3>{name}</h3>
-            <svelte:component this={icon} class="icon" />
+            <svelte:component this={icon} />
         </div>
         <p>{description}</p>
     </section>
@@ -32,6 +32,10 @@
         padding: 1.2rem;
         background-color: var(--color-text-main);
         color: var(--color-bg-main);
+
+        section {
+            margin: 0;
+        }
 
         p {
             margin: 0;

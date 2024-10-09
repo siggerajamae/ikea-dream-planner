@@ -1,33 +1,38 @@
 :root {
-  --color-bg-main: #171818;
-  --color-bg-darker: #1d2020;
-  --color-text-main: #ffffff;
+    --color-bg-main: #171818;
+    --color-bg-darker: #1d2020;
+    --color-text-main: #ffffff;
 }
 
 /* Normal */
 @font-face {
-  font-family: "IKEA Noto";
-  font-style: normal;
-  font-weight: 400;
-  src: url("/fonts/noto-ikea-400.latin.woff2")
+    font-family: "IKEA Noto";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/fonts/noto-ikea-400.latin.woff2")
 }
 
 /* Bold */
 @font-face {
-  font-family: "IKEA Noto";
-  font-style: normal;
-  font-weight: 700;
-  src: url("/fonts/noto-ikea-700.latin.woff2")
+    font-family: "IKEA Noto";
+    font-style: normal;
+    font-weight: 700;
+    src: url("/fonts/noto-ikea-700.latin.woff2")
 }
 
 body {
-  margin: 0;
-  font-family: "IKEA Noto";
-  background-color: var(--color-bg-main);
-  color: var(--color-text-main);
+    margin: 0;
+    font-family: "IKEA Noto";
+    background-color: var(--color-bg-main);
+    color: var(--color-text-main);
 }
 
 a {
-  color: inherit;
-  text-decoration: inherit;
+    color: inherit;
+    text-decoration: inherit;
+}
+
+section {
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
 }

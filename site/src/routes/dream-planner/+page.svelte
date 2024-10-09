@@ -1,170 +1,58 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import QuestionCard from "./QuestionCard.svelte";
-    import NightlightIcon from "$lib/components/NightlightIcon.svelte";
+    import { type Question, QuestionMethod } from "$lib/script/question";
+    import { Wizard, WizardState } from "$lib/script/wizard";
+    import NumberMethod from "./NumberMethod.svelte";
 
-    interface Conditions {
-        firmness: string;
-        springs: string;
-    }
+    export let data: {
+        questions: { normal: Question[]; conditional: Question[] };
+    };
 
-    interface Bed {
-        name: string;
-        conditions: Conditions;
-        image: string;
-        price: Int16Array;
-        score?: number; // optional
-    }
+    let normal = data.questions.normal;
+    let conditional = data.questions.conditional;
 
-    let beds: Bed[] = []; // From JSON
+    // Create a new wizard with the questions
+    let wizard = new Wizard(normal, conditional);
 
-    // Trivial sample questions as of writing
-    let questions = [
-        {
-            question: "What is your preferred firmness?",
-            choices: ["Medium firm", "Firm"],
-            key: "firmness" as keyof Conditions,
-        },
-        {
-            question: "What type of springs do you prefer?",
-            choices: ["Springs", "Pocket springs"],
-            key: "springs" as keyof Conditions,
-        },
-    ];
+    // Product recommender
+    let productRecommender = undefined;
 
-    $: currentQuestionIndex = 0;
-    let filteredBeds: Bed[] = []; // Holds the top beds
-
-    let userAnswers: Partial<Record<keyof Conditions, string>> = {}; // e.g firmness: firm
-
-    // Load bed data from JSON
-    onMount(async () => {
-        const response = await fetch("/products-JSON/sample-beds.json");
-        beds = await response.json();
-        updateRecommendations();
-    });
-
-    // Handle user selection for a question and move to the next
-    function handleSelect(choice: string, questionKey: keyof Conditions) {
-        userAnswers[questionKey] = choice;
-        currentQuestionIndex++;
-        if (currentQuestionIndex >= questions.length) {
-            currentQuestionIndex = 0;
-        }
-        updateRecommendations();
-    }
-
-    function updateRecommendations() {
-        filteredBeds = beds
-            .map((bed) => {
-                // Calculate match score
-                let score = 0;
-                for (const key in userAnswers) {
-                    if (
-                        userAnswers[key as keyof Conditions] ===
-                        bed.conditions[key as keyof Conditions]
-                    ) {
-                        score++;
-                    }
-                }
-                return { ...bed, score };
-            })
-            .sort((a, b) => b.score! - a.score!) // sort by score
-            .slice(0, 4); // Show top 4
-    }
+    // User information TODO
+    let userInfo = undefined;
 </script>
 
-<!-- Main Layout with Two Sections -->
-<div class="layout">
-    <!-- Left side -->
-    <div class="questions">
-        <QuestionCard
-            question={questions[currentQuestionIndex].question}
-            choices={questions[currentQuestionIndex].choices}
-            icon={NightlightIcon}
-            on:select={(event) =>
-                handleSelect(event.detail, questions[currentQuestionIndex].key)}
-        />
-    </div>
-
-    <!-- Right side -->
-    <div class="beds">
-        <h2>Recommended Beds</h2>
-        {#each filteredBeds as bed}
-            <div class="bed-card">
-                <img src={bed.image} alt={bed.name} class="bed-image" />
-                <div class="bed-info">
-                    <h3>{bed.name}</h3>
-                    <p>Price: {bed.price} SEK</p>
-                    <p>Firmness: {bed.conditions.firmness}</p>
-                    <p>Springs: {bed.conditions.springs}</p>
-                </div>
-            </div>
-        {/each}
-    </div>
-</div>
-
 <main>
-    <!-- <h1>Dream Planner</h1>
-  <section
-  <div id="questions">
-    <QuestionCard
-      question="What is your favorite color?"
-      choices={["Red", "Blue", "Green", "Yellow"]}
-      icon={nightlightIcon}
-    />
-  </div>
-  <p>Step through the questions to get personal recommendations!</p> -->
+    <!-- Conditional rendering, Wizard in its greeting state. Doesn't really
+    make sense for actual Wizard to have a greeting state, but yaya -->
+    {#if wizard.state[0] == WizardState.GREET}
+        <p>Greet</p>
+        <button
+            on:click={() => {
+                wizard.nextQuestion();
+
+                // Trigger reacitivity
+                wizard = wizard;
+            }}>Begin</button
+        >
+        <!-- User is being asked a question -->
+    {:else if wizard.state[0] == WizardState.QUESTION}
+        <p>Question: {wizard.state[1].question.ask}</p>
+
+        <!-- Render whatever needs to be onscreen for the user to
+        answer the current question -->
+        {#if wizard.state[1].question.method == QuestionMethod.NUMBER}
+            <NumberMethod />
+        {:else if wizard.state[1].question.method == QuestionMethod.LOCATION}
+            <p>Location method</p>
+        {:else if wizard.state[1].question.method == QuestionMethod.BINARY}
+            <p>Binary method</p>
+        {/if}
+
+        <!-- If the Wizard is recommending products, render that shit -->
+    {:else if wizard.state[0] == WizardState.RECOMMEND}
+        <p>Recommend</p>
+
+        <!-- The Wizard has ended -->
+    {:else if wizard.state[0] == WizardState.END}
+        <p>End</p>
+    {/if}
 </main>
-
-<style lang="scss">
-    .layout {
-        color: var(--color-text-main);
-        padding: 1rem;
-        gap: 2rem;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .questions,
-    .beds {
-        flex: 1;
-    }
-    .beds {
-        padding-left: 1rem;
-        border-left: 1px solid #ddd;
-    }
-
-    .bed-card {
-        display: flex;
-        flex-direction: row;
-        border: 1px solid #ddd;
-        border-radius: 0.5rem;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        gap: 1rem;
-        align-items: center;
-    }
-
-    .bed-image {
-        object-fit: cover;
-        border-radius: 0.5rem;
-        width: 100px;
-        height: 100px;
-    }
-
-    .bed-info {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .bed-info h3 {
-        margin: 0;
-        font-size: 1.2rem;
-    }
-
-    .bed-info p {
-        margin: 0.2rem 0;
-        font-size: 1rem;
-    }
-</style>

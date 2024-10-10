@@ -9,7 +9,9 @@
     <section>
         <div class="top-row">
             <h3>{name}</h3>
-            <svelte:component this={icon} class="icon" />
+            <div class="icon">
+                <svelte:component this={icon} class="icon" />
+            </div>
         </div>
         <p>{description}</p>
     </section>
@@ -22,8 +24,12 @@
         align-items: start;
         gap: 1rem;
 
-        :global(svg) {
-            fill: var(--color-bg-main);
+        .icon {
+            width: 2rem;
+
+            :global(svg) {
+                fill: var(--color-bg-main);
+            }
         }
     }
 

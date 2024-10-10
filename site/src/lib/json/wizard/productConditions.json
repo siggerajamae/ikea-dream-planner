@@ -1,0 +1,12 @@
+[
+    {
+        "id": "30553706",
+        "conditions": [
+            {
+                "type": "min",
+                "key": "age",
+                "value": 4
+            }
+        ]
+    }
+]

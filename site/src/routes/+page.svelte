@@ -2,10 +2,10 @@
     import ToolCard from "./ToolCard.svelte";
 
     // Icons
-    import NightlightIcon from "$lib/components/NightlightIcon.svelte";
-    import BotIcon from "$lib/components/BotIcon.svelte";
-    import CheckroomIcon from "$lib/components/CheckroomIcon.svelte";
-    import GogglesIcon from "$lib/components/GogglesIcon.svelte";
+    import NightlightIcon from "$lib/components/icons/NightlightIcon.svelte";
+    import BotIcon from "$lib/components/icons/BotIcon.svelte";
+    import CheckroomIcon from "$lib/components/icons/CheckroomIcon.svelte";
+    import GogglesIcon from "$lib/components/icons/GogglesIcon.svelte";
 </script>
 
 <main>

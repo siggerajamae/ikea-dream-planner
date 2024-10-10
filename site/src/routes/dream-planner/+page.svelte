@@ -1,170 +1,140 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import QuestionCard from "./QuestionCard.svelte";
-    import NightlightIcon from "$lib/components/NightlightIcon.svelte";
+    import { error } from "@sveltejs/kit";
+    import NumberQuestion from "./NumberQuestion.svelte";
+    import type { Question } from "$lib/script/wizard/question";
+    import { Recommender } from "$lib/script/wizard/recommender";
+    import { fetchProductInfo } from "$lib/script/ikea/product";
 
-    interface Conditions {
-        firmness: string;
-        springs: string;
+    enum WizardState {
+        GREET,
+        QUESTION,
+        RECOMMEND,
+        END,
     }
 
-    interface Bed {
-        name: string;
-        conditions: Conditions;
-        image: string;
-        price: Int16Array;
-        score?: number; // optional
-    }
-
-    let beds: Bed[] = []; // From JSON
-
-    // Trivial sample questions as of writing
-    let questions = [
-        {
-            question: "What is your preferred firmness?",
-            choices: ["Medium firm", "Firm"],
-            key: "firmness" as keyof Conditions,
-        },
-        {
-            question: "What type of springs do you prefer?",
-            choices: ["Springs", "Pocket springs"],
-            key: "springs" as keyof Conditions,
-        },
-    ];
-
-    $: currentQuestionIndex = 0;
-    let filteredBeds: Bed[] = []; // Holds the top beds
-
-    let userAnswers: Partial<Record<keyof Conditions, string>> = {}; // e.g firmness: firm
-
-    // Load bed data from JSON
-    onMount(async () => {
-        const response = await fetch("/products-JSON/sample-beds.json");
-        beds = await response.json();
-        updateRecommendations();
-    });
-
-    // Handle user selection for a question and move to the next
-    function handleSelect(choice: string, questionKey: keyof Conditions) {
-        userAnswers[questionKey] = choice;
-        currentQuestionIndex++;
-        if (currentQuestionIndex >= questions.length) {
-            currentQuestionIndex = 0;
+    function nextQuestion() {
+        // No more questions, end the wizard
+        if (questionStack.length == 0) {
+            wizardState = WizardState.END;
+            return;
         }
-        updateRecommendations();
+
+        // Update the state
+        wizardState = WizardState.QUESTION;
+
+        // Pop a question from the stack
+        let popped = questionStack.pop();
+        currentQuestion =
+            popped != undefined
+                ? popped
+                : // Something went very wrong here
+                  error(500, "question stack empty");
     }
 
-    function updateRecommendations() {
-        filteredBeds = beds
-            .map((bed) => {
-                // Calculate match score
-                let score = 0;
-                for (const key in userAnswers) {
-                    if (
-                        userAnswers[key as keyof Conditions] ===
-                        bed.conditions[key as keyof Conditions]
-                    ) {
-                        score++;
-                    }
-                }
-                return { ...bed, score };
-            })
-            .sort((a, b) => b.score! - a.score!) // sort by score
-            .slice(0, 4); // Show top 4
+    function recommend() {
+        // Check if there are any new recommendations based on the current user information
+        const productIds = recommender.recommend(user);
+
+        if (productIds.length > 0) {
+            // Fetch the product data for each product
+            recommendations = productIds.map(async (id) => {
+                return await fetchProductInfo(id);
+            });
+
+            // Move to the recommendation state if there are new products to recommend
+            wizardState = WizardState.RECOMMEND;
+
+            // TODO: Fetch information for recommended products, and then display this information
+        } else {
+            // Otherwise move onto the next question
+            nextQuestion();
+        }
     }
+
+    export let data;
+
+    const recommender = new Recommender(data.productConditions);
+    let recommendations: any[];
+
+    // User information key/value
+    const user: Map<string, any> = new Map();
+
+    // The question stack is the array of normal questions, reversed
+    const questionStack = data.questions.normal.reverse();
+    let currentQuestion: Question;
+
+    let wizardState: WizardState = WizardState.GREET;
 </script>
 
-<!-- Main Layout with Two Sections -->
-<div class="layout">
-    <!-- Left side -->
-    <div class="questions">
-        <QuestionCard
-            question={questions[currentQuestionIndex].question}
-            choices={questions[currentQuestionIndex].choices}
-            icon={NightlightIcon}
-            on:select={(event) =>
-                handleSelect(event.detail, questions[currentQuestionIndex].key)}
-        />
-    </div>
-
-    <!-- Right side -->
-    <div class="beds">
-        <h2>Recommended Beds</h2>
-        {#each filteredBeds as bed}
-            <div class="bed-card">
-                <img src={bed.image} alt={bed.name} class="bed-image" />
-                <div class="bed-info">
-                    <h3>{bed.name}</h3>
-                    <p>Price: {bed.price} SEK</p>
-                    <p>Firmness: {bed.conditions.firmness}</p>
-                    <p>Springs: {bed.conditions.springs}</p>
-                </div>
-            </div>
-        {/each}
-    </div>
-</div>
-
 <main>
-    <!-- <h1>Dream Planner</h1>
-  <section
-  <div id="questions">
-    <QuestionCard
-      question="What is your favorite color?"
-      choices={["Red", "Blue", "Green", "Yellow"]}
-      icon={nightlightIcon}
-    />
-  </div>
-  <p>Step through the questions to get personal recommendations!</p> -->
+    {#if wizardState == WizardState.GREET}
+        <h1>Welcome to Dream Planner!</h1>
+        <button
+            on:click={() => {
+                nextQuestion();
+            }}>Begin</button
+        >
+    {:else if wizardState == WizardState.QUESTION}
+        <h1>{currentQuestion.ask}</h1>
+        {#if currentQuestion.method == "number"}
+            <NumberQuestion
+                min={currentQuestion.constraints.min}
+                max={currentQuestion.constraints.max}
+                onAnswer={(value) => {
+                    user.set(currentQuestion.key, value);
+                    recommend();
+                }}
+            />
+        {/if}
+    {:else if wizardState == WizardState.RECOMMEND}
+        <h1>Recommendations</h1>
+        <section id="products">
+            {#each recommendations as product}
+                <!-- svelte-ignore empty-block -->
+                {#await product then product}
+                    <section class="product">
+                        <h2>{product.name}</h2>
+                        <img src={product.mainImageUrl} alt={product.name}>
+                        <p>{product.salesPrice.numeral} {product.salesPrice.currencyCode}</p>
+                    </section>
+                {/await}
+            {/each}
+        </section>
+        <button on:click={nextQuestion}>Next</button>
+    {:else if wizardState == WizardState.END}
+        <h1>No more questions</h1>
+    {/if}
 </main>
 
 <style lang="scss">
-    .layout {
-        color: var(--color-text-main);
-        padding: 1rem;
+    main {
+        min-height: 100vh;
+        padding: 4rem;
+        display: flex;
         gap: 2rem;
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .questions,
-    .beds {
-        flex: 1;
-    }
-    .beds {
-        padding-left: 1rem;
-        border-left: 1px solid #ddd;
-    }
-
-    .bed-card {
-        display: flex;
-        flex-direction: row;
-        border: 1px solid #ddd;
-        border-radius: 0.5rem;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        gap: 1rem;
+        flex-direction: column;
         align-items: center;
     }
 
-    .bed-image {
-        object-fit: cover;
-        border-radius: 0.5rem;
-        width: 100px;
-        height: 100px;
+    #products {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 2rem;
     }
 
-    .bed-info {
+    .product {
         display: flex;
         flex-direction: column;
-    }
+        justify-content: center;
+        align-items: flex-start; 
 
-    .bed-info h3 {
-        margin: 0;
-        font-size: 1.2rem;
-    }
+        img {
+            width: 20rem;
+        }
 
-    .bed-info p {
-        margin: 0.2rem 0;
-        font-size: 1rem;
+        p {
+            font-size: 1.2rem;
+        }
     }
 </style>

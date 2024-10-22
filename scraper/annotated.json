@@ -1,25 +1,74 @@
+[
 {
     "id": "40309870",
-    "name": "SKOTTERUD",
     "conditions": {
-        "type": "and",
+        "type": "AND",
         "left": {
-            "type": "or",
+            "type": "AND",
             "left": {
-                "type": "predicate",
-                "name": "min_temp",
-                "value": "1"
+                "type": "MIN",
+                "key": "dick_size",
+                "value": "15"
             },
             "right": {
-                "type": "predicate",
-                "name": "max_temp",
-                "value": "10"
+                "type": "AND",
+                "left": {
+                    "type": "MIN",
+                    "key": "bench_press",
+                    "value": "100"
+                },
+                "right": {
+                    "type": "MIN",
+                    "key": "body_count",
+                    "value": "10"
+                }
             }
         },
         "right": {
-            "type": "predicate",
-            "name": "min_temp",
+            "type": "MAX",
+            "key": "age",
+            "value": "15"
+        }
+    }
+},
+{
+    "id": "60573251",
+    "conditions": {
+        "type": "AND",
+        "left": {
+            "type": "MIN",
+            "key": "temperature",
+            "value": "12"
+        },
+        "right": {
+            "type": "AND",
+            "left": {
+                "type": "MIN",
+                "key": "body_count",
+                "value": "14"
+            },
+            "right": {
+                "type": "MAX",
+                "key": "temperature",
+                "value": "122"
+            }
+        }
+    }
+},
+{
+    "id": "40571248",
+    "conditions": {
+        "type": "AND",
+        "left": {
+            "type": "MIN",
+            "key": "age",
             "value": "2"
+        },
+        "right": {
+            "type": "MAX",
+            "key": "dick_size",
+            "value": "3"
         }
     }
 }
+]

@@ -227,7 +227,6 @@ def upsert_json():
 if __name__ == "__main__":
   atexit.register(write_to_json)
   running = True
-  print(json.dumps(json_objects, indent=4))
 
   while running: 
     upsert_json()

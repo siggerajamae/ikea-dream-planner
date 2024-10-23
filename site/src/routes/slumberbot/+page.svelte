@@ -1,6 +1,4 @@
 <script>
-    import OpenAI from "openai";
-
     let textInput = ""; // This will hold the value of the textbox
     let chatHistory = [];
     let waitingForResponse = false;
@@ -17,85 +15,58 @@
         chatHistory = [...chatHistory, { role: "user", content: textInput }];
         textInput = ""; // Clear the input after adding it to chat history
 
-        // Set up OpenAI API client
-        const openai = new OpenAI({
-            dangerouslyAllowBrowser: true,
-            apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-        });
+        
+        const historyParam = encodeURIComponent(JSON.stringify(chatHistory)); // Convert array to JSON string and encode
 
         try {
-            const res = await fetch(
-                "https://api.openai.com/v1/chat/completions",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${openai.apiKey}`,
-                    },
-                    body: JSON.stringify({
-                        model: "gpt-4",
-                        messages: [
-                            {
-                                role: "system",
-                                content: `You are a bot whose goal is to help
-                                         people sleep. Your owner is IKEA. You should
-                                         only discuss things that could help people
-                                         sleep, our things about IKEA.`,
-                            },
-                            {
-                                role: "system",
-                                content: `You are not ChatGPT and are not
-                                         created by OpenAI, and you shall not make any
-                                         mention of that.`,
-                            },
-                            {
-                                role: "system",
-                                content: `Start the conversation by asking the user
-                                          why they think they are having trouble
-                                          falling asleep, and then help them from
-                                          there. Do not discuss IKEA products unless
-                                          the user makes a mention of them.`,
-                            },
-                            ...chatHistory,
-                        ],
-                        stream: true,
-                    }),
-                },
-            );
+            const response = await fetch(`/slumberbot?history=${encodeURIComponent(historyParam)}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
-            const reader = res.body.getReader();
-            const decoder = new TextDecoder("utf-8");
-            let assistantResponse = "";
-
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            
             let old_chatHistory = chatHistory;
-            // Read the responses in a stream
-            // Otherwise, we have to wait ~5-10 seconds for the whole response at once
+            let buffer = "";
+            // Read the streamed response
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
 
                 const whole_chunk = decoder.decode(value);
-                let split_chunk = whole_chunk.split("data: ");
+                buffer += whole_chunk;
+                let split_chunk = buffer.split("data: ");
                 split_chunk.shift();
-                split_chunk.forEach((chunk) => {
-                    // Don't crash when it sends [DONE]
-                    if (chunk.includes("[DONE]")) return;
-                    let cut_chunk = chunk.split("\n")[0].replace("data: ", "");
+                let assistantResponse = "";
+                try {
+                    split_chunk.forEach((chunk) => {
+                        // Don't crash when it sends [DONE]
+                        if (chunk.includes("[DONE]")) return;
+                        let cut_chunk = chunk.split("\n")[0].replace("data: ", "");
 
-                    let chunk_data = JSON.parse(cut_chunk);
-                    let content = chunk_data.choices[0].delta.content;
-                    if (content == null) return;
-                    assistantResponse += content;
-                });
+                        let chunk_data = JSON.parse(cut_chunk);
+                        let content = chunk_data.choices[0].delta.content;
+                        if (content == null) return;
+                        assistantResponse += content;
+                    });
+                } catch (error) {
+                    // Sometimes we get incomplete responses
+                    // By saving the incomplete ones in a buffer, it will
+                    // be corrected when we get the next chunk
+                }
+                
 
                 chatHistory = [
                     ...old_chatHistory,
                     { role: "assistant", content: assistantResponse },
                 ];
             }
+
         } catch (error) {
-            console.error("Error with API call:", error);
-        } finally {
+            console.error('Error:', error); // Log any errors
+        }
+        finally {
             waitingForResponse = false;
         }
     }

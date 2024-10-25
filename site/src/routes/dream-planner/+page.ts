@@ -22,6 +22,17 @@ export async function load() {
                 user.set("noise", answer)
             },
         },
+        {
+            id: "AIR",
+            ask: "How is the air quality where you live?",
+            method: "choice",
+            constraints: {
+                choices: ["poor", "good"]
+            },
+            onAnswer: (answer, user) => {
+                user.set("airQuality", answer)
+            },
+        },
     ]
     const conditional: Question[] = [
         {

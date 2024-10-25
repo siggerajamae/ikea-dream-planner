@@ -38,5 +38,35 @@
                 "value": "yes"
             }
         ]
+    },
+    {
+        "id": "10498221",
+        "conditions": [
+            {
+                "type": "eq",
+                "key": "airQuality",
+                "value": "poor"
+            }
+        ]
+    },
+    {
+        "id": "50461937",
+        "conditions": [
+            {
+                "type": "eq",
+                "key": "airQuality",
+                "value": "poor"
+            }
+        ]
+    },
+    {
+        "id": "50461942",
+        "conditions": [
+            {
+                "type": "eq",
+                "key": "airQuality",
+                "value": "poor"
+            }
+        ]
     }
 ]

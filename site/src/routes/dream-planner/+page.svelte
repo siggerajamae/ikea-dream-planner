@@ -130,11 +130,16 @@
 <main>
     {#if wizardState == WizardState.GREET}
         <div
-            class="state-container"
+            class="state-container greet-container"
             in:fly={{ x: 200 }}
             out:fly|local={{ x: -200 }}
         >
             <h1>Welcome to Dream Planner!</h1>
+            <p>
+                This is an interactive demo for helping users find products in
+                the IKEA catalog that may improve their sleep. When you are
+                ready, click begin!
+            </p>
             <button
                 on:click={() => {
                     nextQuestion();
@@ -192,7 +197,7 @@
             in:fly={{ x: 200 }}
             out:fly|local={{ x: -200 }}
         >
-            <h1>Then maybe you would like...</h1>
+            <h1>Then maybe you would be interested in...</h1>
             <section id="products">
                 {#each recommendations as product}
                     <!-- svelte-ignore empty-block -->
@@ -244,7 +249,10 @@
             grid-row-end: 2;
         }
 
+        .greet-container,
         .end-container {
+            text-align: center;
+
             h1,
             p {
                 padding: 0;
@@ -277,6 +285,5 @@
         flex-direction: row;
         flex-wrap: wrap;
         gap: 2rem;
-        transition: ease-in-out .2s;
     }
 </style>

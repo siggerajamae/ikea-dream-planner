@@ -45,9 +45,26 @@
         align-items: center;
         padding: 4rem;
         gap: 4rem;
+        text-align: center;
 
         img {
             width: 6rem;
+        }
+
+        h2 {
+            margin: 0;
+            padding: 0;
+            font-size: 1.1em;
+        }
+    }
+
+    @media only screen and (max-width: 600px) {
+        nav {
+            justify-content: space-between;
+        }
+
+        footer {
+            flex-direction: column;
         }
     }
 </style>

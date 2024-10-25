@@ -1,72 +1,85 @@
 :root {
-    --color-bg-main: #171818;
-    --color-bg-darker: #1d2020;
-    --color-text-main: #ffffff;
+  --color-bg-main: #171818;
+  --color-bg-darker: #1d2020;
+  --color-text-main: #ffffff;
 }
 
 /* Normal */
 @font-face {
-    font-family: "IKEA Noto";
-    font-style: normal;
-    font-weight: 400;
-    src: url("/fonts/noto-ikea-400.latin.woff2")
+  font-family: "IKEA Noto";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/noto-ikea-400.latin.woff2")
 }
 
 /* Bold */
 @font-face {
-    font-family: "IKEA Noto";
-    font-style: normal;
-    font-weight: 700;
-    src: url("/fonts/noto-ikea-700.latin.woff2")
+  font-family: "IKEA Noto";
+  font-style: normal;
+  font-weight: 700;
+  src: url("/fonts/noto-ikea-700.latin.woff2")
 }
 
 body {
-    margin: 0;
-    font-family: "IKEA Noto";
-    background-color: var(--color-bg-main);
-    color: var(--color-text-main);
+  margin: 0;
+  font-family: "IKEA Noto";
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
 }
 
 a {
-    color: inherit;
-    text-decoration: inherit;
+  color: inherit;
+  text-decoration: inherit;
 }
 
 button,
-input[type="number"] {
-    all: unset;
-    font-size: 1.2rem;
-    padding-left: 1.4em;
-    padding-right: 1.4em;
-    padding-top: .8em;
-    padding-bottom: .8em;
-    border: .15rem solid var(--color-text-main);
-    border-radius: .5em;
-    text-align: center;
+input[type="number"],
+input[type="time"] {
+  all: unset;
+  font-size: 1.2rem;
+  padding-left: 1.4em;
+  padding-right: 1.4em;
+  padding-top: .8em;
+  padding-bottom: .8em;
+  border-bottom: .2rem solid var(--color-text-main);
+  text-align: center;
 }
 
 button {
-    cursor: pointer;
+  cursor: pointer;
 }
 
-input[type="number"] {
-    -moz-appearance: textfield;
-    appearance: textfield;
-    background-color: var(--color-bg-darker);
+input[type="number"],
+input[type="time"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  background-color: var(--color-bg-darker);
 }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 .icon {
-    display: inline-block;
-    margin: 0;
+  margin: 0;
+  height: fit-content;
 
-    svg {
-        fill: var(--color-text-main);
-        width: auto;
-    }
+  svg {
+    fill: var(--color-text-main);
+    display: block;
+    width: auto;
+  }
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1em;
+}
+
+.no-border {
+  border: none;
 }

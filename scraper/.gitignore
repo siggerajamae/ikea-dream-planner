@@ -1,2 +1,4 @@
 env/
 __pycache__/
+annotated.json
+products.json

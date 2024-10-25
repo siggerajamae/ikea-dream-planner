@@ -1,11 +1,41 @@
 [
     {
-        "id": "30553706",
+        "id": "10539066",
         "conditions": [
             {
-                "type": "min",
-                "key": "age",
-                "value": 4
+                "type": "geq",
+                "key": "lightHours",
+                "value": 1
+            }
+        ]
+    },
+    {
+        "id": "50417812",
+        "conditions": [
+            {
+                "type": "geq",
+                "key": "lightHours",
+                "value": 1
+            }
+        ]
+    },
+    {
+        "id": "20500172",
+        "conditions": [
+            {
+                "type": "eq",
+                "key": "noise",
+                "value": "yes"
+            }
+        ]
+    },
+    {
+        "id": "60492518",
+        "conditions": [
+            {
+                "type": "eq",
+                "key": "noise",
+                "value": "yes"
             }
         ]
     }

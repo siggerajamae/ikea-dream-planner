@@ -10,7 +10,7 @@
         <div class="top-row">
             <h3>{name}</h3>
             <div class="icon">
-                <svelte:component this={icon} class="icon" />
+                <svelte:component this={icon} />
             </div>
         </div>
         <p>{description}</p>

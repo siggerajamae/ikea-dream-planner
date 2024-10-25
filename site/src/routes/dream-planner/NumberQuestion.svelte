@@ -5,6 +5,30 @@
     let value: number = min;
 </script>
 
-<input type="number" bind:value {min} {max} />
+<div class="row">
+    <input type="number" bind:value {min} {max} />
 
-<button on:click={() => onAnswer(value)}>Answer</button>
+    <div class="button-group">
+        <button
+            on:click={() => {
+                if (value == null) {
+                    return;
+                }
+                if (value < min) {
+                    onAnswer(min);
+                } else if (value > max) {
+                    onAnswer(max);
+                } else {
+                    onAnswer(max);
+                }
+            }}>Answer</button
+        >
+    </div>
+</div>
+
+<style lang="scss">
+    .row {
+        display: flex;
+        gap: 2rem;
+    }
+</style>

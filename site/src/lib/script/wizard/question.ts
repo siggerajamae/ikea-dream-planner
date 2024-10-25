@@ -1,13 +1,9 @@
-export class Question {
+export type Question = {
+    id: string;
     ask: string;
     method: string;
-    key: string;
-    constraints: any;
-
-    constructor(ask: string, key: string, field: string, constraints: any) {
-        this.ask = ask;
-        this.method = key;
-        this.key = field
-        this.constraints = constraints
-    }
+    onAnswer: (answer: any, user: Map<String, any>) => void;
+    constraints?: any;
+    substitutes?: string[];
+    followUps?: string[];
 }

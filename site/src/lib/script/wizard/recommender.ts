@@ -1,5 +1,3 @@
-import { error } from "@sveltejs/kit"
-
 export class Recommender {
     // Maintain a list of products that have been recommended
     private recommended: Set<string>
@@ -18,22 +16,30 @@ export class Recommender {
             case ("or"): {
                 return this.isMatch(user, condition.left) || this.isMatch(user, condition.right)
             }
-            case ("min"): {
+            case ("geq"): {
                 const value = user.get(condition.key)
+
                 if (value == undefined) {
                     return false
                 }
                 return value >= condition.value
             }
-            case ("max"): {
+            case ("leq"): {
                 const value = user.get(condition.key)
                 if (value == undefined) {
                     return false
                 }
                 return value <= condition.value
             }
+            case ("eq"): {
+                const value = user.get(condition.key)
+                if (value == undefined) {
+                    return false
+                }
+                return value == condition.value
+            }
             default: {
-                error(500, "unrecongnized condition type")
+                throw Error(`unrecongnized condition type ${condition.type}`)
             }
         }
     }

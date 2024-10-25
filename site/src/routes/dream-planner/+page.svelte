@@ -285,5 +285,16 @@
         flex-direction: row;
         flex-wrap: wrap;
         gap: 2rem;
+        justify-content: center;
+    }
+
+    @media only screen and (max-width: 600px) {
+        main {
+            padding: 2rem;
+        }
+
+        .question-ask-row {
+            flex-direction: column;
+        }
     }
 </style>

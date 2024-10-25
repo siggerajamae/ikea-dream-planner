@@ -19,7 +19,7 @@
                 } else if (value > max) {
                     onAnswer(max);
                 } else {
-                    onAnswer(max);
+                    onAnswer(value);
                 }
             }}>Answer</button
         >

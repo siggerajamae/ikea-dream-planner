@@ -64,8 +64,73 @@
         "conditions": [
             {
                 "type": "eq",
-                "key": "airQuality",
+                "key": "airquality",
                 "value": "poor"
+            }
+        ]
+    },
+    {
+        "id": "10458098",
+        "conditions": [
+            {
+                "type": "leq",
+                "key": "temperature",
+                "value": 20
+            }
+        ]
+    },
+    {
+        "id": "30513598",
+        "conditions": [
+            {
+                "type": "leq",
+                "key": "temperature",
+                "value": 20
+            }
+        ]
+    },
+    {
+        "id": "20507890",
+        "conditions": [
+            {
+                "type": "leq",
+                "key": "temperature",
+                "value": 20
+            }
+        ]
+    },
+    {
+        "id": "s99537506",
+        "conditions": [
+            {
+                "type": "eq",
+                "key": "mattressType",
+                "value": "firm"
+            }
+        ]
+    },
+    {
+        "id": "50340163",
+        "conditions": [
+            {
+                "type": "eq",
+                "key": "mattressType",
+                "value": "firm"
+            }
+        ]
+    },
+    {
+        "id": "10559629",
+        "conditions": [
+            {
+                "type": "eq",
+                "key": "mattressType",
+                "value": "firm"
+            },
+            {
+                "type": "geq",
+                "key": "temperature",
+                "value": 23
             }
         ]
     }

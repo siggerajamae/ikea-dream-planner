@@ -33,6 +33,29 @@ export async function load() {
                 user.set("airQuality", answer)
             },
         },
+        {
+            id: "TEMP",
+            ask: "What is the temperature in your room at night? (C°)",
+            method: "number",
+            constraints: {
+                min: 0,
+                max: 50
+            },
+            onAnswer: (answer, user) => {
+                user.set("temperature", answer)
+            },
+        },
+        {
+            id: "MATTRESS_TYPE",
+            ask: "What kind of mattress type do you prefer?",
+            method: "choice",
+            constraints: {
+                choices: ["soft", "medium", "firm"]
+            },
+            onAnswer: (answer, user) => {
+                user.set("mattressType", answer)
+            },
+        },
     ]
     const conditional: Question[] = [
         {
@@ -41,7 +64,7 @@ export async function load() {
             method: "time",
             onAnswer: (answer, user) => {
                 user.set("timeSunrise", answer)
-                let timeWake = user.get("timeWake") 
+                let timeWake = user.get("timeWake")
                 if (timeWake != null) {
                     let lightHours = (timeWake - answer) / 60
                     user.set("lightHours", lightHours)

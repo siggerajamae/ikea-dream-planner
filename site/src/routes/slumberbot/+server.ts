@@ -4,18 +4,23 @@ import type { RequestHandler } from '@sveltejs/kit';
 
 import OpenAI from "openai";
 
-export const GET: RequestHandler = async ({ url }) => {
-    const dataParam = url.searchParams.get('history');
-    
+export const POST: RequestHandler = async ({ request }) => {
     let chatHistory;
-    if (dataParam) {
-        try {
-            chatHistory = JSON.parse(decodeURIComponent(dataParam));
-        } catch (e) {
-            return new Response('Invalid data format', { status: 400 });
+
+    try {
+        // Parse the request body as JSON
+        const requestBody = await request.json();
+        
+        // Validate that chat history exists in the body
+        if (!requestBody.historyParam) {
+            return new Response('No data provided', { status: 400 });
         }
-    } else {
-        return new Response('No data provided', { status: 400 });
+
+        // Try to parse the historyParam from the request body
+        chatHistory = JSON.parse(requestBody.historyParam);
+
+    } catch (e) {
+        return new Response('Invalid data format', { status: 400 });
     }
 
     // Set up OpenAI API client
@@ -41,6 +46,14 @@ export const GET: RequestHandler = async ({ url }) => {
                                     people sleep. Your owner is IKEA. You should
                                     only discuss things that could help people
                                     sleep, our things about IKEA.`,
+                        },
+                        {
+                            role: "system",
+                            content: `Remember the following IKEA product names well:
+                                    when you say them exactly as stated here, the user
+                                    will be shown a card of the product.
+                                    "MALM"
+                                    "SÄBOVIK"`,
                         },
                         {
                             role: "system",

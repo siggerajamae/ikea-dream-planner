@@ -1,9 +1,51 @@
 <script>
-    import OpenAI from "openai";
-
     let textInput = ""; // This will hold the value of the textbox
     let chatHistory = [];
+    let displayChatHistory = [];
     let waitingForResponse = false;
+    let knownProducts = new Map();
+
+    function initProducts() {
+        knownProducts.set("MALM", {
+                    role: "productheader",
+                    name: "MALM",
+                    link: "https://www.ikea.com/se/en/p/malm-bed-frame-high-w-2-storage-boxes-white-s59175955/",
+                    filename: "malm.png",
+                });
+        knownProducts.set("SÄBÖVIK", {
+                    role: "productheader",
+                    name: "SÄBÖVIK",
+                    link: "https://www.ikea.com/se/en/p/saeboevik-divan-bed-firm-vissle-grey-s69385750/",
+                    filename: "sabovik.png",
+                });
+        knownProducts.set("IDANÄS", {
+                    role: "productheader",
+                    name: "IDANÄS",
+                    link: "https://www.ikea.com/se/en/p/idanaes-upholstered-storage-bed-gunnared-dark-grey-90447176/",
+                    filename: "idanas.png",
+                });
+    }
+    initProducts();
+
+    async function updateChatHistory() {
+        displayChatHistory = [];
+        chatHistory.forEach(message => {
+            let added = false;
+            displayChatHistory.push(message);
+            if (message.role=="assistant") {
+                message.content.split(" ").forEach(word => {
+                    console.log(word.replace(/[.,!?]$/, ""));
+                    let w = word.replace(/[.,!?]$/, "");
+                    if (knownProducts.has(w)) {
+                        if (!added) {
+                            added = true;
+                            displayChatHistory.push(knownProducts.get(w));
+                        }
+                    }
+                });
+            }
+        });
+    }
 
     async function handleSubmit() {
         if (!textInput.trim()) {
@@ -15,87 +57,68 @@
 
         // Add input to chat history
         chatHistory = [...chatHistory, { role: "user", content: textInput }];
+        updateChatHistory();
         textInput = ""; // Clear the input after adding it to chat history
 
-        // Set up OpenAI API client
-        const openai = new OpenAI({
-            dangerouslyAllowBrowser: true,
-            apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-        });
+        
+        const historyParam = JSON.stringify(chatHistory); // Convert array to JSON string and encode
 
         try {
-            const res = await fetch(
-                "https://api.openai.com/v1/chat/completions",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${openai.apiKey}`,
-                    },
-                    body: JSON.stringify({
-                        model: "gpt-4",
-                        messages: [
-                            {
-                                role: "system",
-                                content: `You are a bot whose goal is to help
-                                         people sleep. Your owner is IKEA. You should
-                                         only discuss things that could help people
-                                         sleep, our things about IKEA.`,
-                            },
-                            {
-                                role: "system",
-                                content: `You are not ChatGPT and are not
-                                         created by OpenAI, and you shall not make any
-                                         mention of that.`,
-                            },
-                            {
-                                role: "system",
-                                content: `Start the conversation by asking the user
-                                          why they think they are having trouble
-                                          falling asleep, and then help them from
-                                          there. Do not discuss IKEA products unless
-                                          the user makes a mention of them.`,
-                            },
-                            ...chatHistory,
-                        ],
-                        stream: true,
-                    }),
+            const response = await fetch('/slumberbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-            );
+                body: JSON.stringify({ historyParam })  // Wrap it inside an object
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
-            const reader = res.body.getReader();
-            const decoder = new TextDecoder("utf-8");
-            let assistantResponse = "";
-
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder('utf-8');
+            
             let old_chatHistory = chatHistory;
-            // Read the responses in a stream
-            // Otherwise, we have to wait ~5-10 seconds for the whole response at once
+            let buffer = "";
+            // Read the streamed response
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
 
                 const whole_chunk = decoder.decode(value);
-                let split_chunk = whole_chunk.split("data: ");
+                buffer += whole_chunk;
+                let split_chunk = buffer.split("data: ");
                 split_chunk.shift();
-                split_chunk.forEach((chunk) => {
-                    // Don't crash when it sends [DONE]
-                    if (chunk.includes("[DONE]")) return;
-                    let cut_chunk = chunk.split("\n")[0].replace("data: ", "");
+                let assistantResponse = "";
+                try {
+                    split_chunk.forEach((chunk) => {
+                        // Don't crash when it sends [DONE]
+                        if (chunk.includes("[DONE]")) return;
+                        let cut_chunk = chunk.split("\n")[0].replace("data: ", "");
 
-                    let chunk_data = JSON.parse(cut_chunk);
-                    let content = chunk_data.choices[0].delta.content;
-                    if (content == null) return;
-                    assistantResponse += content;
-                });
+                        let chunk_data = JSON.parse(cut_chunk);
+                        let content = chunk_data.choices[0].delta.content;
+                        if (content == null) return;
+                        assistantResponse += content;
+                    });
+                } catch (error) {
+                    // Sometimes we get incomplete responses
+                    // By saving the incomplete ones in a buffer, it will
+                    // be corrected when we get the next chunk
+                }
+                
 
                 chatHistory = [
                     ...old_chatHistory,
                     { role: "assistant", content: assistantResponse },
                 ];
+                updateChatHistory(chatHistory);
             }
+
         } catch (error) {
-            console.error("Error with API call:", error);
-        } finally {
+            console.error('Error:', error); // Log any errors
+        }
+        finally {
             waitingForResponse = false;
         }
     }
@@ -116,6 +139,7 @@
                         "Hello! How can I assist you today? Are you having trouble sleeping?",
                 },
             ];
+            updateChatHistory();
         }, 500);
     });
 </script>
@@ -123,18 +147,32 @@
 <!-- HTML structure -->
 <div id="chat-wrapper">
     <div id="chat-container">
-        {#each chatHistory as message}
+        {#each displayChatHistory as message}
             <div
                 class={message.role === "user"
                     ? "user-message"
-                    : "assistant-message"}
+                    : message.role == "assistant"
+                    ? "assistant-message"
+                    : "product-card"
+                    }
             >
                 <p>
                     <strong
                         >{message.role === "user"
                             ? "You: "
-                            : "Slumberbot: "}</strong
-                    >{message.content}
+                            : message.role == "assistant"
+                            ? "Slumberbot: "
+                            : ""}</strong
+                    >
+
+                    {#if message.role === "productheader"}
+                        You can read more about {message.name} 
+                        <a href="{message.link}" target="_blank">here</a>.<br/>
+                        <img src="/ikea-images/{message.filename}" alt="ikea furniture">
+                    {:else}
+                        {message.content}
+                    {/if}
+
                 </p>
             </div>
         {/each}
@@ -171,7 +209,9 @@
     }
 
     .user-message,
-    .assistant-message {
+    .assistant-message,
+    .product-card
+    {
         max-width: 75%;
         padding: 10px 15px;
         border-radius: 15px;
@@ -181,6 +221,19 @@
         background-color: #424242;
         color: white;
         white-space: pre-line;
+    }
+
+    .product-card {
+        max-width: 50%;
+    }
+
+    .product-card img {
+        width: 60%;
+    }
+
+    .product-card a {
+        color: #00AFFF;
+        text-decoration: underline;
     }
 
     .user-message {
